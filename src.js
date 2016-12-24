@@ -44,24 +44,30 @@ function drawInitialGrid() {
   }
 }
 
-function checkNeighbourhood(cells, i, j) {
-  if (i === 0 || j === 0 || i == width-1 || j == height-1) {
-    return 0;
-  }
+function mod(i, n) {
+  return (((i % n) + n) % n);
+}
 
+function checkNeighbourhood(cells, i, j) {
   var live_cells = 0;
 
-  if (cells[i-1][j-1] == 1) live_cells++;
-  if (cells[i][j-1] == 1) live_cells++;
-  if (cells[i+1][j-1] == 1) live_cells++;
+  var _i = mod(i-1, width);
+  var i_ = mod(i+1, width);
 
-  if (cells[i-1][j] == 1) live_cells++;
+  var _j = mod(j-1, height);
+  var j_ = mod(j+1, height);
+
+  if (cells[_i][_j] == 1) live_cells++;
+  if (cells[i][_j] == 1) live_cells++;
+  if (cells[i_][_j] == 1) live_cells++;
+
+  if (cells[_i][j] == 1) live_cells++;
   // if (cells[i][j] == 1) live_cells++;
-  if (cells[i+1][j] == 1) live_cells++;
+  if (cells[i_][j] == 1) live_cells++;
 
-  if (cells[i-1][j+1] == 1) live_cells++;
-  if (cells[i][j+1] == 1) live_cells++;
-  if (cells[i+1][j+1] == 1) live_cells++;
+  if (cells[_i][j_] == 1) live_cells++;
+  if (cells[i][j_] == 1) live_cells++;
+  if (cells[i_][j_] == 1) live_cells++;
 
 
   return live_cells;
