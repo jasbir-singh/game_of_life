@@ -1,10 +1,10 @@
 var canvas = document.getElementById("game-of-life");
 var ctx = canvas.getContext("2d");
 
-var width = 50;
-var height = 50;
+var width = 100;
+var height = 100;
+var scale = 10;
 
-var scale = 20;
 var currentGen = [];
 
 // let's start by 10x10 array
@@ -17,6 +17,27 @@ function initializeCells() {
       currentGen[i][j] = 0;
     }
   }
+}
+
+function liveCells() {
+  var live_cells = [];
+  for (var i = 0; i < width; i++) {
+    for (var j = 0; j < height; j++) {
+      if (currentGen[i][j] == 1){
+        live_cells.push([i, j]);
+      }
+    }
+  }
+
+  return live_cells;
+}
+
+function gosperGlider() {
+  var preFilledCells = [[1, 5],[1, 6],[2, 5],[2, 6],[11, 5],[11, 6],[11, 7],[12, 4],[12, 8],[13, 3],[13, 9],[14, 3],[14, 9],[15, 6],[16, 4],[16, 8],[17, 5],[17, 6],[17, 7],[18, 6],[21, 3],[21, 4],[21, 5],[22, 3],[22, 4],[22, 5],[23, 2],[23, 6],[25, 1],[25, 2],[25, 6],[25, 7],[35, 3],[35, 4],[36, 3],[36, 4]];
+
+  preFilledCells.forEach(function (point) {
+    currentGen[point[0]][point[1]] = 1;
+  });
 }
 
 function acorn() {
@@ -81,8 +102,8 @@ function draw(cells) {
       } else {
         ctx.fillStyle = 'white';
       }
-      ctx.fillRect(i*scale, j*scale, scale, scale);
       ctx.strokeRect(i*scale, j*scale, scale, scale);
+      ctx.fillRect(i*scale, j*scale, scale, scale);
     }
   }
 }
@@ -94,9 +115,15 @@ function next() {
     for (var j = 0; j < height; j++) {
       var live_cells = checkNeighbourhood(currentGen, i, j);
 
-      if ( live_cells < 2) {
+      if (live_cells < 2) {
+        // underpopulation
         nextGen[i][j] = 0;
-      } else if (live_cells == 2 || live_cells == 3) {
+      } else if (live_cells == 2) {
+        if (nextGen[i][j] === 1) {
+          nextGen[i][j] = 1;
+        }
+      } else if (live_cells == 3) {
+        // reproduction
         nextGen[i][j] = 1;
       } else if (live_cells > 3) {
         nextGen[i][j] = 0;
@@ -108,7 +135,9 @@ function next() {
 
 initializeCells();
 drawInitialGrid();
+// oscillator();
 acorn();
+// gosperGlider();
 draw(currentGen);
 
 function animate() {
@@ -116,5 +145,7 @@ function animate() {
   next();
 }
 
+animate();
+
 // animate();
-setInterval(animate, 75);
+setInterval(animate, 100);
