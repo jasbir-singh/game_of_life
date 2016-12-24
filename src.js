@@ -1,26 +1,47 @@
 var canvas = document.getElementById("game-of-life");
 var ctx = canvas.getContext("2d");
 
-var width = 10;
-var height = 10;
+var width = 50;
+var height = 50;
 
-var scale = 50;
+var scale = 20;
 var currentGen = [];
 
 // let's start by 10x10 array
-function initialize() {
+function initializeCells() {
   for (var i = 0; i < width; i++) {
     currentGen[i] = [];
 
     for (var j = 0; j < height; j++) {
-      // currentGen[i][j] = Math.floor(Math.random() * 10);
-      // currentGen[i][j] = 0;
+      // currentGen[i][j] = Math.floor(Math.random() * 2);
+      currentGen[i][j] = 0;
     }
   }
+}
+
+function acorn() {
+  // see https://www.refsmmat.com/posts/2016-01-25-conway-game-of-life.html
+  currentGen[1][1] = 1;
+  currentGen[2][1] = 1;
+  currentGen[2][3] = 1;
+  currentGen[4][2] = 1;
+  currentGen[5][1] = 1;
+  currentGen[6][1] = 1;
+  currentGen[7][1] = 1;
+}
+
+function oscillator() {
   currentGen[3][4] = 1;
   currentGen[4][4] = 1;
   currentGen[5][4] = 1;
-  // cells[4][5] = 1;
+}
+
+function drawInitialGrid() {
+  for (var i = 0; i < width; i++) {
+    for(var j = 0; j < height; j++ ) {
+      ctx.strokeRect(i*scale, j*scale, scale, scale);
+    }
+  }
 }
 
 function checkNeighbourhood(cells, i, j) {
@@ -53,9 +74,9 @@ function draw(cells) {
         ctx.fillStyle = 'black';
       } else {
         ctx.fillStyle = 'white';
-        ctx.strokeRect(i*scale, j*scale, scale, scale);
       }
       ctx.fillRect(i*scale, j*scale, scale, scale);
+      ctx.strokeRect(i*scale, j*scale, scale, scale);
     }
   }
 }
@@ -66,11 +87,10 @@ function next() {
   for (var i = 0; i < width; i++) {
     for (var j = 0; j < height; j++) {
       var live_cells = checkNeighbourhood(currentGen, i, j);
-      console.log(live_cells);
 
       if ( live_cells < 2) {
         nextGen[i][j] = 0;
-      } else if (live_cells == 3) {
+      } else if (live_cells == 2 || live_cells == 3) {
         nextGen[i][j] = 1;
       } else if (live_cells > 3) {
         nextGen[i][j] = 0;
@@ -80,14 +100,15 @@ function next() {
   currentGen = nextGen;
 }
 
-initialize();
+initializeCells();
+drawInitialGrid();
+acorn();
 draw(currentGen);
 
 function animate() {
-  next();
   draw(currentGen);
-  console.log('done');
+  next();
 }
 
 // animate();
-setInterval(animate, 100);
+setInterval(animate, 75);
