@@ -1,8 +1,8 @@
 var canvas = document.getElementById("game-of-life");
 var ctx = canvas.getContext("2d");
 
-var width = 100;
-var height = 100;
+var width = canvas.width;
+var height = canvas.height;
 var scale = 10;
 
 var currentGen = [];
